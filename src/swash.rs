@@ -16,6 +16,7 @@ fn swash_image(
     font_system: &mut FontSystem,
     context: &mut ScaleContext,
     cache_key: CacheKey,
+    embolden: f32,
 ) -> Option<SwashImage> {
     let font = match font_system.get_font(cache_key.font_id) {
         Some(some) => some,
@@ -35,6 +36,7 @@ fn swash_image(
     // Compute the fractional offset-- you'll likely want to quantize this
     // in a real renderer
     let offset = Vector::new(cache_key.x_bin.as_float(), cache_key.y_bin.as_float());
+    println!("Embolden: {}", embolden);
 
     // Select our source order
     Render::new(&[
@@ -49,6 +51,7 @@ fn swash_image(
     .format(Format::Alpha)
     // Apply the fractional offset
     .offset(offset)
+    .embolden(embolden)
     .transform(if cache_key.flags.contains(CacheKeyFlags::FAKE_ITALIC) {
         Some(Transform::skew(
             Angle::from_degrees(14.0),
@@ -122,8 +125,9 @@ impl SwashCache {
         &mut self,
         font_system: &mut FontSystem,
         cache_key: CacheKey,
+        embolden: f32,
     ) -> Option<SwashImage> {
-        swash_image(font_system, &mut self.context, cache_key)
+        swash_image(font_system, &mut self.context, cache_key, embolden)
     }
 
     /// Create a swash Image from a cache key, caching results
@@ -134,7 +138,7 @@ impl SwashCache {
     ) -> &Option<SwashImage> {
         self.image_cache
             .entry(cache_key)
-            .or_insert_with(|| swash_image(font_system, &mut self.context, cache_key))
+            .or_insert_with(|| swash_image(font_system, &mut self.context, cache_key, 0.0))
     }
 
     pub fn get_outline_commands(
