@@ -43,7 +43,7 @@ features = ["hardcoded-data"]
 [dependencies.peniko]
 # See: https://github.com/linebender/peniko/compare/main...taj-p:peniko:tajp/fastStroke
 git = "https://github.com/taj-p/peniko.git"
-rev = "4ed4241767fe3b6c5935d5c283a484871128c6e6"
+rev = "2b0a17d1805d3dd4cac255365a600609272ed4b3"
 optional = true
 
 [features]
